@@ -4,21 +4,55 @@
     "description": "vscode support for chez scheme",
     "version": "0.0.1",
     "publisher": "ch",
+    "license": "MIT",
+    "icon": "image/lambda.png",
     "engines": {
         "vscode": "^1.25.0"
     },
+    "keywords": [
+        "scheme",
+        "chez"
+    ],
     "categories": [
-        "Other"
+        "Programming Languages"
     ],
     "activationEvents": [
-        "onCommand:extension.sayHello"
+        "onLanguage:scheme"
     ],
     "main": "./extension",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/chclock/vscode-chez.git"
+    },
+    "bugs": "https://github.com/chclock/vscode-chez/issues",
+    "homepage": "https://github.com/chclock/vscode-chez",
     "contributes": {
-        "commands": [
+        "languages": [{
+            "id": "scheme",
+            "aliases": [
+                "Scheme",
+                "scheme"
+            ],
+            "extensions": [
+                ".scm",
+                ".ss",
+                ".sch",
+                ".rkt",
+                ".sc"
+            ],
+            "configuration": "./scheme-configuration.json"
+        }],
+        "grammars": [
             {
-                "command": "extension.sayHello",
-                "title": "Hello World"
+                "language": "scheme",
+                "scopeName": "source.scheme",
+                "path": "./syntaxes/scheme.tmLanguage"
+            }
+        ],
+        "snippets": [
+            {
+                "language": "scheme",
+                "path": "./snippets/scheme.json"
             }
         ]
     },

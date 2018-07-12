@@ -1,0 +1,68 @@
+{
+    "cond": {
+        "prefix": "cond",
+        "body": "(cond\n\t(${1:predicate1} ${2:consequent1})\n\t(${3:predicate2} ${4:consequent2}))",
+        "description": "Code snippet for condition statement",
+        "scope": "source.scheme"
+    },
+    "define": {
+        "prefix": "define",
+        "body": "(define (${1:name} ${2:parameters})\n\t${3:body})",
+        "description": "Code snippet for define-lambda statement",
+        "scope": "source.scheme"
+    },
+    "define1": {
+        "prefix": "define1",
+        "body": "(define ${1:name}\n\t(lambda\n\t\t(${2:parameters})\n\t\t${3:body})",
+        "description": "Code snippet for define statement",
+        "scope": "source.scheme"
+    },
+    "if": {
+        "prefix": "if",
+        "body": "(if (${1:predicate})\n\t${2:consequent}\n\t${3:alternative})",
+        "description": "Code snippet for an if statement",
+        "scope": "source.scheme"
+    },
+    "lambda": {
+        "prefix": "lambda",
+        "body": "(lambda ($1) ${2:#f})",
+        "description": "Code snippet for lambda expression",
+        "scope": "source.scheme"
+    },
+    "let": {
+        "prefix": "let",
+        "body": "(let (${1:variables})\n\t($0))",
+        "description": "Code snippet for let statement",
+        "scope": "source.scheme"
+    },
+    "let1": {
+        "prefix": "let1",
+        "body": "(let ([${1:variable} ${2:value}])\n\t($0))",
+        "description": "Code snippet for let1 statement",
+        "scope": "source.scheme"
+    },
+    "let*": {
+        "prefix": "let*",
+        "body": "(let* ([${1:variable} ${2:value}])\n\t($0))",
+        "description": "Code snippet for let* statement",
+        "scope": "source.scheme"
+    },
+    "set!": {
+        "prefix": "set!",
+        "body": "(set! ${1:place} ${2:value})",
+        "description": "Code snippet for set! statement",
+        "scope": "source.scheme"
+    },
+    "try": {
+        "prefix": "try",
+        "body": "(try\n\t${1:body}\n\t(catch\n\t\t(lambda (e) ${2:catch})))",
+        "description": "Code snippet for try-catch, need chezcore",
+        "scope": "source.scheme"
+    },
+    "library":{
+        "prefix": "library",
+        "body": "(library (${1:lib-name} ${2:file-name})\n\t(export\n\t\t${3:export})\n\t(import\n\t\t(scheme)\n\t\t(${4:import}))\n)",
+        "description": "Code snippet for library",
+        "scope": "source.scheme"
+    }
+}

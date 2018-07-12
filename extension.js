@@ -5,24 +5,11 @@ const vscode = require('vscode');
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 function activate(context) {
-
-    // Use the console to output diagnostic information (console.log) and errors (console.error)
-    // This line of code will only be executed once when your extension is activated
-    console.log('Congratulations, your extension "vscode-chez" is now active!');
-
-    // The command has been defined in the package.json file
-    // Now provide the implementation of the command with  registerCommand
-    // The commandId parameter must match the command field in package.json
-    let disposable = vscode.commands.registerCommand('extension.sayHello', function () {
-        // The code you place here will be executed every time your command is executed
-
-        // Display a message box to the user
-        vscode.window.showInformationMessage('Hello World!');
-    });
-
-    context.subscriptions.push(disposable);
     activateRainbowBrackets(context);
+    context.subscriptions.push(vscode.languages.setLanguageConfiguration('scheme', configuration));
+    // vscode.workspace.getConfiguration().update('editor.tabSize', 2, vscode.ConfigurationTarget.Global);
 }
+
 function activateRainbowBrackets(context) {
     var roundBracketsColor = ["#e6b422", "#c70067", "#00a960", "#fc7482"];
     var squareBracketsColor = ["#33ccff", "#8080ff", "#0073a8"];
@@ -63,6 +50,7 @@ function activateRainbowBrackets(context) {
             rainbowBrackets();
         }
     }, null, context.subscriptions);
+
     function rainbowBrackets() {
         if (!activeEditor) {
             return;
@@ -81,24 +69,29 @@ function activateRainbowBrackets(context) {
         var squigglyBracketsDecorationTypeMap = {};
         for (var index in roundBracketsDecorationTypes) {
             roundBracketsDecorationTypeMap[index] = [];
-        }
-        ;
+        };
         for (var index in squareBracketsDecorationTypes) {
             squareBracketsDecorationTypeMap[index] = [];
-        }
-        ;
+        };
         for (var index in squigglyBracketsDecorationTypes) {
             squigglyBracketsDecorationTypeMap[index] = [];
-        }
-        ;
+        };
         var rightBracketsDecorationTypes = [];
         var roundCalculate;
         var squareCalculate;
         var squigglyCalculate;
         while (match = regEx.exec(text)) {
+            if (match.index - 2 > -1 && text.substr(match.index - 2, 2) === "#\\") {
+                console.log("ignored")
+                continue;
+            }
             var startPos = activeEditor.document.positionAt(match.index);
             var endPos = activeEditor.document.positionAt(match.index + 1);
-            var decoration = { range: new vscode.Range(startPos, endPos), hoverMessage: null };
+            var decoration = {
+                range: new vscode.Range(startPos, endPos),
+                hoverMessage: null
+            };
+
             switch (match[0]) {
                 case '(':
                     roundCalculate = roundBracketsColorCount;
@@ -114,8 +107,7 @@ function activateRainbowBrackets(context) {
                         roundCalculate = leftRoundBracketsStack.pop();
                         roundBracketsColorCount = roundCalculate;
                         roundBracketsDecorationTypeMap[roundCalculate].push(decoration);
-                    }
-                    else {
+                    } else {
                         rightBracketsDecorationTypes.push(decoration);
                     }
                     break;
@@ -133,8 +125,7 @@ function activateRainbowBrackets(context) {
                         squareCalculate = leftSquareBracketsStack.pop();
                         squareBracketsColorCount = squareCalculate;
                         squareBracketsDecorationTypeMap[squareCalculate].push(decoration);
-                    }
-                    else {
+                    } else {
                         rightBracketsDecorationTypes.push(decoration);
                     }
                     break;
@@ -152,8 +143,7 @@ function activateRainbowBrackets(context) {
                         squigglyCalculate = leftSquigglyBracketsStack.pop();
                         squigglyBracketsColorCount = squigglyCalculate;
                         squigglyBracketsDecorationTypeMap[squigglyCalculate].push(decoration);
-                    }
-                    else {
+                    } else {
                         rightBracketsDecorationTypes.push(decoration);
                     }
                     break;
@@ -172,9 +162,16 @@ function activateRainbowBrackets(context) {
         activeEditor.setDecorations(isolatedRightBracketsDecorationTypes, rightBracketsDecorationTypes);
     }
 }
+
+var configuration = {
+    wordPattern: /[\w\-\.:<>\*][\w\d\.\\/\-\?<>\*!]+/,
+    indentationRules: {
+        decreaseIndentPattern: undefined,
+        increaseIndentPattern: /^\s*\(.*[^)]\s*$/
+    }
+}
 exports.activate = activate;
 
 // this method is called when your extension is deactivated
-function deactivate() {
-}
+function deactivate() {}
 exports.deactivate = deactivate;
