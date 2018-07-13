@@ -156,7 +156,7 @@
 						(?&lt;=(\s|\(|\[)) # preceded by space or ( 
 						( do|or|and|else|quasiquote|begin|if|case|set!|
 						  cond|let|unquote|define|let\*|unquote-splicing|delay|
-						  letrec)
+						  letrec|lambda)
 						(?=(\s|\())</string>
 					<key>name</key>
 					<string>keyword.control.scheme</string>
