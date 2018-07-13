@@ -14,7 +14,8 @@
         "chez"
     ],
     "categories": [
-        "Programming Languages"
+        "Programming Languages",
+        "Snippets"
     ],
     "activationEvents": [
         "onLanguage:scheme"
