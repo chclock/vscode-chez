@@ -1,12 +1,19 @@
-# vscode-chez README
+# Vscode-Chez README
 
-This is the README for your extension "vscode-chez". After writing up a brief description, we recommend including the following sections.
+Vscode-Chez's goal is to make it easier for you to write chez code on vscode.
 
 ## Features
 
-Vscode-Chez is inspired by [rainbow-brackets](https://github.com/gastrodia/rainbow-brackets.git) and [vscode-scheme](https://github.com/chclock/vscode-scheme)
+Vscode-Chez is inspired by [rainbow-brackets](https://github.com/gastrodia/rainbow-brackets.git) and [vscode-scheme](https://github.com/sjhuangx/vscode-scheme)
 
-#### Snippets
+### Snippets
+
 support following snippets: cond, define, define1, if, lambda, let, let1, let*, set!, try, library.
+
+## Release Notes
+
+### 0.1.0
+
+Combine rainbow-brackets and vscode-scheme
 
 **Enjoy!**

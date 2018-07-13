@@ -2,10 +2,10 @@
     "name": "vscode-chez",
     "displayName": "vscode-chez",
     "description": "vscode support for chez scheme",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "publisher": "ch",
     "license": "MIT",
-    "icon": "image/lambda.png",
+    "icon": "images/lambda.png",
     "engines": {
         "vscode": "^1.25.0"
     },
