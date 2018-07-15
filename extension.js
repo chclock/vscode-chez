@@ -5,12 +5,13 @@ const vscode = require('vscode');
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 function activate(context) {
-    activateRainbowBrackets(context);
+    var discolored = vscode.workspace.getConfiguration("vscode-chez").get("discolorBracketInString");
+    activateRainbowBrackets(context, discolored);
     context.subscriptions.push(vscode.languages.setLanguageConfiguration('scheme', configuration));
     // vscode.workspace.getConfiguration().update('editor.tabSize', 2, vscode.ConfigurationTarget.Global);
 }
 
-function activateRainbowBrackets(context) {
+function activateRainbowBrackets(context, discolored) {
     var roundBracketsColor = ["#e6b422", "#c70067", "#00a960", "#fc7482"];
     var squareBracketsColor = ["#33ccff", "#8080ff", "#0073a8"];
     var squigglyBracketsColor = ["#d4d4aa", "#d1a075", "#9c6628"];
@@ -80,9 +81,12 @@ function activateRainbowBrackets(context) {
         var roundCalculate;
         var squareCalculate;
         var squigglyCalculate;
+        var stringIndexList = discolored ? getStringIndexList(text) : null;
         while (match = regEx.exec(text)) {
             if (match.index - 2 > -1 && text.substr(match.index - 2, 2) === "#\\") {
-                console.log("ignored")
+                continue;
+            }
+            if (discolored && ifIndexInString(match.index, stringIndexList)) {
                 continue;
             }
             var startPos = activeEditor.document.positionAt(match.index);
@@ -161,6 +165,29 @@ function activateRainbowBrackets(context) {
         }
         activeEditor.setDecorations(isolatedRightBracketsDecorationTypes, rightBracketsDecorationTypes);
     }
+}
+
+function getStringIndexList(text) {
+    // var regEx = /(?<!\\)"[\s\S]*?(?<!\\)"/g;
+    text = text.replace(/#\\"/ig, "iii").replace(/\\\\"/ig, "ii\"").replace(/\\"/ig, "ii")
+    var regEx = /"[\s\S]*?"/g;
+    var match;
+    var lst = []
+    while (match = regEx.exec(text)) {
+        lst.push([match.index, match.index + match[0].length - 1])
+    }
+    return lst;
+}
+
+function ifIndexInString(index, indexList) {
+    if (!indexList)
+        return false;
+    for (var i in indexList) {
+        var ary = indexList[i];
+        if (index > ary[0] && index < ary[1])
+            return true;
+    }
+    return false;
 }
 
 var configuration = {

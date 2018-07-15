@@ -10,10 +10,20 @@ Vscode-Chez is inspired by [rainbow-brackets](https://github.com/gastrodia/rainb
 
 support following snippets: cond, define, define1, if, lambda, let, let1, let*, set!, try, library.
 
+### Extension Settings
+
+This extension contributes the following settings:
+
+- vscode-chez.discolorBracketInString: true
+
 ## Release Notes
 
 ### 0.1.0
 
 Combine rainbow-brackets and vscode-scheme
+
+### 0.1.1
+
+Decolor the brackets in string object
 
 **Enjoy!**

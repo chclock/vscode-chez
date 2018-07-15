@@ -2,7 +2,7 @@
     "name": "vscode-chez",
     "displayName": "vscode-chez",
     "description": "vscode support for chez scheme",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "publisher": "ch",
     "license": "MIT",
     "icon": "images/lambda.png",
@@ -55,7 +55,18 @@
                 "language": "scheme",
                 "path": "./snippets/scheme.json"
             }
-        ]
+        ],
+        "configuration": {
+            "type": "object",
+            "title": "Vscode-Chez configuration",
+            "properties": {
+                "vscode-chez.discolorBracketInString": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Discolor The Brackets In String Object"
+                }
+            }
+        }
     },
     "scripts": {
         "postinstall": "node ./node_modules/vscode/bin/install",
