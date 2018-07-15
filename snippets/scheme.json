@@ -7,14 +7,14 @@
     },
     "define": {
         "prefix": "define",
-        "body": "(define (${1:name} ${2:parameters})\n\t${3:body})",
-        "description": "Code snippet for define-lambda statement",
+        "body": "(define (${1:name} ${2:arguments})\n\t${3:body})",
+        "description": "Code snippet for define statement",
         "scope": "source.scheme"
     },
-    "define1": {
-        "prefix": "define1",
-        "body": "(define ${1:name}\n\t(lambda\n\t\t(${2:parameters})\n\t\t${3:body})",
-        "description": "Code snippet for define statement",
+    "def": {
+        "prefix": "def",
+        "body": "(define ${1:name}\n\t(lambda (${2:arguments})\n\t\t${3:body})",
+        "description": "Code snippet for define-lambda statement",
         "scope": "source.scheme"
     },
     "if": {
@@ -31,19 +31,13 @@
     },
     "let": {
         "prefix": "let",
-        "body": "(let (${1:variables})\n\t($0))",
+        "body": "(let ([${1:variable} ${2:value}])\n\t${3:body})",
         "description": "Code snippet for let statement",
-        "scope": "source.scheme"
-    },
-    "let1": {
-        "prefix": "let1",
-        "body": "(let ([${1:variable} ${2:value}])\n\t($0))",
-        "description": "Code snippet for let1 statement",
         "scope": "source.scheme"
     },
     "let*": {
         "prefix": "let*",
-        "body": "(let* ([${1:variable} ${2:value}])\n\t($0))",
+        "body": "(let* ([${1:variable} ${2:value}])\n\t${3:body})",
         "description": "Code snippet for let* statement",
         "scope": "source.scheme"
     },

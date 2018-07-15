@@ -7,3 +7,7 @@
 ### 0.1.1 (July 15, 2018)
 
 - Decolor the brackets in string object
+
+### 0.1.2 (July 16, 2018)
+
+- Modify snippets

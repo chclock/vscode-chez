@@ -8,7 +8,7 @@ Vscode-Chez is inspired by [rainbow-brackets](https://github.com/gastrodia/rainb
 
 ### Snippets
 
-support following snippets: cond, define, define1, if, lambda, let, let1, let*, set!, try, library.
+support following snippets: cond, define, def, if, lambda, let, let*, set!, try, library.
 
 ### Extension Settings
 
@@ -25,5 +25,9 @@ Combine rainbow-brackets and vscode-scheme
 ### 0.1.1
 
 Decolor the brackets in string object
+
+### 0.1.2
+
+Modify snippts
 
 **Enjoy!**
