@@ -2,7 +2,7 @@
     "name": "vscode-chez",
     "displayName": "vscode-chez",
     "description": "vscode support for chez scheme",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "publisher": "ch",
     "license": "MIT",
     "icon": "images/lambda.png",
@@ -18,7 +18,8 @@
         "Snippets"
     ],
     "activationEvents": [
-        "onLanguage:scheme"
+        "onLanguage:scheme",
+        "onCommand:schemeIndent.newlineAndIndent"
     ],
     "main": "./extension",
     "repository": {
@@ -66,7 +67,25 @@
                     "description": "Discolor The Brackets In String Object"
                 }
             }
-        }
+        },
+        "keybindings": [
+            {
+                "command": "schemeIndent.newlineAndIndent",
+                "key": "enter",
+                "when": "editorTextFocus && !editorHasMultipleSelections && editorLangId == scheme && !suggestWidgetVisible && !vim.active"
+            },
+            {
+                "command": "schemeIndent.newlineAndIndent",
+                "key": "enter",
+                "when": "editorTextFocus && !editorHasMultipleSelections && editorLangId == scheme && !suggestWidgetVisible && vim.active == true && vim.mode =~ /(Insert|Replace|SurroundInputMode)/"
+            }
+        ],
+        "commands": [
+            {
+                "command": "schemeIndent.newlineAndIndent",
+                "title": "newline and auto indent"
+            }
+        ]
     },
     "scripts": {
         "postinstall": "node ./node_modules/vscode/bin/install",
