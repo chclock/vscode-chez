@@ -11,3 +11,7 @@
 ### 0.1.2 (July 16, 2018)
 
 - Modify snippets
+
+### 0.1.3 (December 12, 2019)
+
+- scheme indentation and show word completion proposals

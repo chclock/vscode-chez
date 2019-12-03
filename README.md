@@ -30,4 +30,8 @@ Decolor the brackets in string object
 
 Modify snippts
 
+### 0.1.3 (December 12, 2019)
+
+Scheme indentation and show word completion proposals
+
 **Enjoy!**
