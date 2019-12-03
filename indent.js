@@ -23,18 +23,21 @@ function newlineAndIndent(textEditor, edit, args) {
     var opSatck = [];
     var colStack = [-tabSize];
     var rowStack = [-tabSize];
-    var laskCol = -tabSize;
-    var lastOp = -1;
     var indent;
+    var lastOp = -1;
+    var lastCol = -1;
 
     function saveLastValue() {
         rowStack.pop();
-        laskCol = colStack.pop();
+        lastCol = colStack.pop();
         lastOp = opSatck.pop();
     }
 
     function loopBrackets(lines, linesLength) {
         var isString = false;
+        var commentPrefix = "";
+        var escapedChar = false;
+        var commentNum = 0;
 
         for (var row = 0; row < linesLength; row += 1) {
             var line = lines[row];
@@ -43,20 +46,58 @@ function newlineAndIndent(textEditor, edit, args) {
                 var c = line[col];
 
                 if (isString) {
-                    if (c == '"') {
+                    if (c == '"' && !escapedChar) {
                         isString = false;
+                        continue;
+                    }
+                    if (escapedChar) {
+                        escapedChar = false;
+                        continue;
+                    }
+                    if (c == "\\") {
+                        escapedChar = true;
+                        continue;
                     }
                     continue;
                 }
 
-                switch(c){
-                    case '"': isString = true; break;
-                    case "(": pushStack(opSatck, colStack, rowStack, 0, col, row); lastOp = -1; break;
-                    case "[": pushStack(opSatck, colStack, rowStack, 1, col, row); lastOp = -1; break;
-                    case "{": pushStack(opSatck, colStack, rowStack, 2, col, row); lastOp = -1; break;
-                    case ")": if (valueEqual(0, opSatck)) saveLastValue(); break;
-                    case "]": if (valueEqual(1, opSatck)) saveLastValue(); break;
-                    case "}": if (valueEqual(2, opSatck)) saveLastValue(); break;
+                switch(commentPrefix) {
+                    case "": 
+                        if ("#|".includes(c)) {
+                            commentPrefix=c;
+                            continue;
+                        } 
+                        break;
+                    case "#": 
+                        if (c == "|") {
+                            commentNum+=1;
+                            commentPrefix="";
+                            continue;
+                        } else {
+                            commentPrefix="";
+                            break;
+                        }
+                    case "|": 
+                        if (c == "#" && commentNum>0) {
+                            commentNum-=1;
+                            commentPrefix="";
+                            continue;
+                        } else {
+                            commentPrefix="";
+                            break;
+                        }
+                }
+
+                if (commentNum==0) {
+                    switch(c){
+                        case '"': if (verifiStr(line, col)) isString = true; break;
+                        case "(": if (pushStack(opSatck, colStack, rowStack, 0, col, row, line)) lastOp=-1; break;
+                        case "[": if (pushStack(opSatck, colStack, rowStack, 1, col, row, line)) lastOp=-1; break;
+                        case "{": if (pushStack(opSatck, colStack, rowStack, 2, col, row, line)) lastOp=-1; break;
+                        case ")": if (valueEqual(0, opSatck, col, line)) saveLastValue(); break;
+                        case "]": if (valueEqual(1, opSatck, col, line)) saveLastValue(); break;
+                        case "}": if (valueEqual(2, opSatck, col, line)) saveLastValue(); break;
+                    }
                 }
             }
         }
@@ -69,22 +110,22 @@ function newlineAndIndent(textEditor, edit, args) {
 
             loopBrackets(lines, linesLength);
 
+            var col = colStack.pop();
+            indent = col + tabSize;
 
-            var colStackTop = colStack[colStack.length-1];
-            indent = colStackTop + tabSize;
-            // special handling alignment
-            // indicate that there are closed brackets in front
-            if (colStackTop >= 0 && lastOp >= 0){
-                var row = rowStack.pop();
-                var col =  colStack.pop();
-                var text = textEditor.document.getText(new vscode.Range(row, col, pointRow, pointCol));
-                // If [] or {} direct align
+            if (col >= 0){
                 if (lastOp > 0) {
-                    indent = laskCol;
+                    indent = lastCol;
                 } else {
+                    var row = rowStack.pop();
+                    var text = textEditor.document.getText(new vscode.Range(row, col, pointRow, pointCol));
+
                     var identifer = text.match(re);
                     if (identifer && identiSet.has(identifer[1])) {
-                        indent = laskCol;
+                        indent = findFirstBraket(text, col, text.length);
+                        if (indent == col) {
+                            indent += tabSize
+                        }
                     }
                 }
             }
@@ -113,13 +154,60 @@ function extendCommentToNextLine(line, pos) {
 }
 exports.extendCommentToNextLine = extendCommentToNextLine;
 
-function pushStack(opSatck, colStack, rowStack, num, col, row) {
-    opSatck.push(num);
-    colStack.push(col);
-    rowStack.push(row);
+function findFirstBraket(text, offset, maxCol) {
+    var hadSpace = false;
+    var col = 0;
+    var newlineIndex = 0;
+    var newline = false;
+
+    for (var i=0; i<maxCol; i++) {
+        if (' \t'.includes(text[i])) {
+            hadSpace = true;
+        } else if ("\n\r".includes(text[i])) {
+            hadSpace = true;
+            newline = true;
+            newlineIndex = i;
+        } else {
+            if (hadSpace) {
+                col = i;
+                break;
+            }
+        }
+    }
+    if (newline) {
+        return col - 1 - newlineIndex;
+    } else {
+        return col + offset;
+    }
 }
 
-function valueEqual(num, opSatck) {
+function verifiStr(line, col) {
+    if (col>0 && "\\'`".includes(line[col-1])) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function pushStack(opSatck, colStack, rowStack, num, col, row, line) {
+    if (col>0 && "\\" == line[col-1]) {
+        return false;
+    }
+    opSatck.push(num);
+
+    if (col>0 && "'`".includes(line[col-1])) {
+        col -= 1;
+    }
+    
+    colStack.push(col);
+    rowStack.push(row);
+    return true;
+}
+
+function valueEqual(num, opSatck, col, line) {
+    if (col>0 && "\\" == line[col-1]) {
+        return false;
+    }
     if (opSatck[opSatck.length-1] != num) {
         return false;
     } else {
